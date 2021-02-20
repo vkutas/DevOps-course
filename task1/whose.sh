@@ -5,7 +5,7 @@ while [ -n "$1" ]
 
  			-v    ) OUTPUT_DATA='^Organization|^Country';;
 			-vv   ) OUTPUT_DATA='^Organization|^Country|^City';;
-			-vvv  ) OUTPUT_DATA='^Organization|^Country|^City|^Addres|^PostalCode';;
+			-vvv  ) OUTPUT_DATA='^Organization|^Country|^City|^Address|^PostalCode';;
  			-e    ) CONNECTIONS_DETAILS=$(sudo netstat -tnp | grep -w 'ESTABLISHED');;
             -eu   ) CONNECTIONS_DETAILS=$(sudo netstat -tunp | awk '$6 =="ESTABLISHED" || $6 == "/$^/" {print $0}');;
  			-a    ) CONNECTIONS_DETAILS=$(sudo netstat -tnap);;
@@ -37,12 +37,13 @@ fi
 
 echo "$CONNECTIONS_DETAILS" | awk -v pat="$PROCESS" '$7~pat {print $5}' | 
   cut -d: -f1 | sort | uniq -c | sort | tail -n"$NUMBER_OF_CONNECTIONS" | 
-  grep -oP '(\d+\.){3}\d+' | 
-  while read IP
+  while read LINE
    do 
-   	whois $IP | 
-   	awk -v pat="$OUTPUT_DATA" ' 	     
-   		BEGIN {FS = ":"; patt = $PATTERN;}; 
-   		$1 ~ pat {print $1, $2}';
-    echo '\n';
+   	CON_PER_IP=$(echo "$LINE" | cut -d' ' -f1);
+   	whois $(echo "$LINE" | cut -d' ' -f2) |
+   	   	awk -v pat="$OUTPUT_DATA" -v con_per_ip="$CON_PER_IP" ' 	     
+   		BEGIN {FS = ":";}; 
+   		$1 ~ pat {print $1, $2 }
+   		END {print "Number of connections", con_per_ip}';
+    echo '';
    done
