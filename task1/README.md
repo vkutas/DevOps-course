@@ -8,8 +8,6 @@ In order to get information about other connections states, options -e, -eu, -a 
 If run as non-root user output only contains information about user-owned processes. If run as root user output contain information about all users processes.
 
 ##USAGE
-	whose.sh [OPTIONS] process_name
-	whose.sh [OPTIONS] PID
 	whose.sh process_name [OPTIONS]  
 	whose.sh PID [OPTIONS]
 
@@ -27,7 +25,6 @@ this only show information about connection of process with PID 1182.
 ##OPTIONS
 -v  
 	Print information about country where IP owner located
-
 -vv 
 	Print information about country and city where IP owner located
 
