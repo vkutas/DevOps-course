@@ -1,6 +1,6 @@
 #!/bin/sh
 export PATH="/usr/local/bin:/usr/bin";
-EXAMPLE_OF_USAGE="Example of usage: 'whose.sh firefox' or 'whose.sh 1287'. \nSee README.md for more details.";
+EXAMPLE_OF_USAGE="Example of usage: 'whose_v2.sh firefox' or 'whose_v2.sh 1287'. \nSee README_v2.md for more details.\n";
 PROCESS="$1";
 shift;
 
@@ -11,7 +11,7 @@ while [ -n "${1}" ]; do
 			-vv   ) OUTPUT_DATA='/Organization\|Country\|City/p'; n=3;;
 			-vvv  ) OUTPUT_DATA='/Organization\|Country\|City\|Address\|PostalCode/p';;
  			-e    ) CONNECTIONS_DETAILS=$(netstat -tnp | grep -w 'ESTABLISHED');;
-      -eu   ) CONNECTIONS_DETAILS=$(netstat -tunp | awk '$6 =="ESTABLISHED" || $6 == "/$^/" {print $0}');;
+      -eu   ) CONNECTIONS_DETAILS=$(netstat -tunp | awk '$6 =="ESTABLISHED" || $1 == "udp" {print $0}');;
  			-a    ) CONNECTIONS_DETAILS=$(netstat -tnap);;
 			-n    ) NUMBER_OF_CONNECTIONS="$2";
 					    shift;
@@ -25,8 +25,8 @@ while [ -n "${1}" ]; do
 done
 
 if [ ! -n "${PROCESS}" ]; then 
-   	echo "Process name or PID must be specified";
- 	echo "$EXAMPLE_OF_USAGE";
+   	printf "Process name or PID must be specified\n${EXAMPLE_OF_USAGE}";
+ 	  printf "$EXAMPLE_OF_USAGE";
  	exit 1;
 fi 	
 
