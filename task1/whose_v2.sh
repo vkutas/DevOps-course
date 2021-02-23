@@ -3,7 +3,7 @@ export PATH="/usr/local/bin:/usr/bin";
 EXAMPLE_OF_USAGE="Example of usage: 'whose_v2.sh firefox' or 'whose_v2.sh 1287'. \nSee README_v2.md for more details.\n";
 PROCESS="$1";
 shift;
-CL_FLAGS=$(echo "$@" | sed 's/-//g');
+CL_FLAGS="$@";
 while [ -n "${1}" ]; do
  	case "$1" in
  			-e    ) CONNECTIONS_DETAILS=$(netstat -tnp | grep -w 'ESTABLISHED');;
@@ -47,43 +47,45 @@ LINES=$(echo "${PROCESS_CONNECTIONS}" | cut -d: -f1 | sort | uniq -c | sort | ta
    	CON_PER_IP=$(echo "$LINE" | cut -d' ' -f1);
    	IP=$(echo "$LINE" | cut -d' ' -f2);
    	DATA=$(whois "$IP");
-   	ORGANIZATION=$(echo "$DATA" | sed -n '/OrgName:/p' | sed 's/OrgName:\s*//g' | tail -1); 
+   	ORGANIZATION=$(echo "$DATA" | sed -n '/^OrgName:\|^org-name:/p' | tail -1 | sed 's/^OrgName:\s*//g; s/^org-name:\s*//g'); 
+    if [ ! -n "${ORGANIZATION}" ]; then
+          ORGANIZATION="(Not Found)";
+    fi  
     OUTPUT="${OUTPUT}${NL}Remote IP:                ${IP}";
     OUTPUT="${OUTPUT}${NL}Count of Connections:     ${CON_PER_IP}";
     OUTPUT="${OUTPUT}${NL}Organization:             ${ORGANIZATION}";
 
-# If 'vv' is pasted as option, add Country and City to the output.    
-  	if test "${CL_FLAGS#v}" != "$CL_FLAGS"
-      then
-      	COUNTRY=$(echo "$DATA" | sed -n '/^Country:/p' | tail -1 | sed 's/^Country:\s*//g' );
+# If 'v' is pasted as option, add Country and City to the output.    
+  	if test "$(echo $CL_FLAGS | grep 'v')"; then
+      	COUNTRY=$(echo "$DATA" | sed -n '/^Country\|^country:/p' | tail -1 | sed 's/^Country:\s*//g; s/^country:\s*//g');
         if [ ! -n "${COUNTRY}" ]; then
-      	  COUNTRY="Country:                             (Not Found)";
+      	  COUNTRY="(Not Found)";
       	fi	
         OUTPUT="${OUTPUT}${NL}Country:                  ${COUNTRY}";
         
+        CITY=$(echo "$DATA" | sed -n '/^City:\|^city:/p' | tail -1 | sed 's/^City:\s*//g; s/^city:\s*//g' );
         if [ ! -n "${CITY}" ]; then
-          CITY="City:                                   (Not Found)";
+          CITY="(Not Found)";
         fi
-        CITY=$(echo "$DATA" | sed -n '/^City:/p' | tail -1 | sed 's/^City:\s*//g' );
+        
         OUTPUT="${OUTPUT}${NL}City:                     ${CITY}";      
       fi
 
-# If 'vvv' is passed as option, add Address and Postal Code to the output.
-      if test "${CL_FLAGS#vv}" != "$CL_FLAGS"
-      then
-      	ADDRESS=$(echo "$DATA" | sed -n '/^Address:/p' | tail -2 | sed 's/^Address:\s*//g');
+# If 'vv' is passed as option, add Address and Postal Code to the output.
+    if test "$(echo $CL_FLAGS | grep 'vv')"; then
+      	ADDRESS=$(echo "$DATA" | sed -n '/^Address:\|^address:/p' | tail -2 | sed 's/^Address:\s*//g; s/^address:\s*//g');
 
 # If Address contains two or more lines, concatenate them
       	if [ $(echo "$ADDRESS" | wc -l) -ge 2 ]; then 
       		ADDRESS="$(echo "$ADDRESS" | paste -sd ',')";
       	fi
       	if [ ! -n "${ADDRESS}" ]; then
-      	  ADDRESS="Address: (Not Found)";
+      	  ADDRESS="(Not Found)";
       	fi
 
-      	POSTAL_CODE=$(echo "$DATA" | sed -n '/^PostalCode:/p' | tail -1 | sed 's/^PostalCode:\s*//g' );
+      	POSTAL_CODE=$(echo "$DATA" | sed -n '/^PostalCode:\|^postal-code:/p' | tail -1 | sed 's/^PostalCode:\s*//g; s/^PostalCode:\s*//g');
       	if [ ! -n "${POSTAL_CODE}" ]; then
-      	  POSTAL_CODE="PostalCode: (Not Found)";
+      	  POSTAL_CODE="(Not Found)";
       	fi
 
       	OUTPUT="${OUTPUT}${NL}Address:                  ${ADDRESS}";
