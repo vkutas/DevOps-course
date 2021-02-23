@@ -8,15 +8,17 @@ In order to get information about other connections states, options -e, -u, -a c
 If run as non-root user output only contains information about user-owned processes. If run as root user output contain information about all users processes.
 
 ##USAGE
-	whose_v2_v2.sh PROCESS_NAME [-e] [-u] [-a] [-n NUM] [OTPUT_OPTIONS]
-	whose_v2_v2.sh PID [-e] [-u] [-t] [-n NUM] [-OTPUT_OPTIONS]
+	./whose_v2_v2.sh PROCESS_NAME [-e] [-u] [-a] [-n NUM] [OTPUT_OPTIONS]
+	./whose_v2_v2.sh PID [-e] [-u] [-t] [-n NUM] [-OTPUT_OPTIONS]
 
 ##EXAMPLE OF USAGE
 	./whose_v2_v2.sh firefox	
 	./whose_v2_v2.sh firefox -n 10 -vv
 	./whose_v2_v2.sh 1298 v -a -n 6
+	./whose_v2_v2.sh 1298 -u -n 6 vvc
 
 ##OPTIONS
+
 -e
 	Show information only about TCP connections in ESTABLISHED state.
 
@@ -30,10 +32,15 @@ If run as non-root user output only contains information about user-owned proces
 	Specifying number of connection which will be processed by the script. By default - 5 last connections from list sorted by remote IP.
 
 ##OUTPUT OPTIONS
+
 -v  
-	Prints information about country and city where IP owner located
+	Prints information about country and city where IP owner located.
+
 -vv 
 	In addition to '-v' prints information about organization's address and postal code.
+
+-c
+	Prints information about count of connections per organizations (separate table in the of main output).
 
 ##TIPS
 When process_name is provided, it don't have to exactly match the process name, for instance if run the script as: 

@@ -93,8 +93,13 @@ LINES=$(echo "${PROCESS_CONNECTIONS}" | cut -d: -f1 | sort | uniq -c | sort | ta
 
     fi
     OUTPUT="${OUTPUT}${NL}";
-
-    
    done < <(echo "${LINES}")
 
    printf "%s" "${OUTPUT}"; 
+
+   if test "$(echo $CL_FLAGS | grep 'c')"; then
+    printf "\n#Connections per Organization#\n"
+    echo "$OUTPUT" | sed -n '/^Organization:/p' | sed 's/^Organization:\s*//g' | sort | uniq -c | sort | 
+      awk 'BEGIN {printf "%-20s %s\n", "Count of connections", "Organization" }
+        { printf "%-20s %s\n", $1, substr($0, index($0, $2)) }';
+   fi 
