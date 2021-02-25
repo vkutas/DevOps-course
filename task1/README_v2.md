@@ -8,8 +8,8 @@ In order to get information about other connections states, options -e, -u, -a c
 If run as non-root user output only contains information about user-owned processes. If run as root user output contain information about all users processes.
 
 ## DEPENDENCIES ##
-netstat (from 'net-toos' package)
-whois
+netstat (from 'net-toos' package)  
+whois  
 
 ## USAGE #
 ***./whose_v2_v2.sh PROCESS_NAME [-e] [-u] [-a] [-n NUM] [OTPUT_OPTIONS]***    
