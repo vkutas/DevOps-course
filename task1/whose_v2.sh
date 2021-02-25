@@ -1,6 +1,6 @@
 #!/bin/bash
 export PATH="/usr/local/bin:/usr/bin";
-EXAMPLE_OF_USAGE="Example of usage: 'whose_v2.sh firefox' or 'whose_v2.sh 1287'. \nSee README_v2.md for more details.\n";
+EXAMPLE_OF_USAGE="Example of usage: 'whose_v2.sh firefox' or 'whose_v2.sh 1287'. See README_v2.md for more details.";
 PROCESS="$1";
 shift;
 CL_FLAGS="$*";
@@ -17,7 +17,7 @@ while [ -n "${1}" ]; do
 done
 
 if [ -z "${PROCESS}" ]; then
-    printf "Process name or PID must be specified\n %s" "${EXAMPLE_OF_USAGE}";
+    printf "Process name or PID must be specified\n\r%s\n\r" "${EXAMPLE_OF_USAGE}";
     exit 1;
 fi
 
@@ -35,7 +35,7 @@ fi
 
 PROCESS_CONNECTIONS=$(echo "${CONNECTIONS_DETAILS}" | awk -v pat="$PROCESS" '$7~pat { print $5 }');
 if [ -z "${PROCESS_CONNECTIONS}" ]; then
-    printf "Connections for process \"%s\" not found." "${PROCESS}";
+    printf "Connections for process \"%s\" not found.\n\r" "${PROCESS}";
     exit 1;
 fi
 

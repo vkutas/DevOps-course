@@ -1,5 +1,4 @@
-export PATH="/usr/local/bin:/usr/bin";
-EXAMPLE_OF_USAGE="Example of usage: 'whose_v2.sh firefox' or 'whose_v2.sh 1287'. \nSee README_v2.md for more details.\n";
+EXAMPLE_OF_USAGE="Example of usage: 'whose.sh firefox' or 'whose.sh 1287'. See README.md for more details.";
 PROCESS="$1";
 shift;
 
@@ -24,8 +23,7 @@ while [ -n "${1}" ]; do
 done
 
 if [ ! -n "${PROCESS}" ]; then
-    printf "Process name or PID must be specified\n${EXAMPLE_OF_USAGE}";
-    printf "$EXAMPLE_OF_USAGE";
+    printf "Process name or PID must be specified\n\r%s\n\r" "${EXAMPLE_OF_USAGE}";
     exit 1;
 fi
 
