@@ -7,6 +7,10 @@ In order to get information about other connections states, options *-e*, *-eu*,
 
 If run as non-root user output only contains information about user-owned processes. If run as root user output contain information about all users processes.
 
+## DEPENDENCIES ##
+netstat (from 'net-toos' package)
+whois
+
 ## USAGE ##
 	whose.sh process_name [OPTIONS]  
 	whose.sh PID [OPTIONS]
