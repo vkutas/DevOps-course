@@ -41,8 +41,7 @@ fi
 
 PROCESS_CONNECTIONS=$(echo "${CONNECTIONS_DETAILS}" | awk -v pat="$PROCESS" '$7~pat { print $5 }');
 if [ ! -n "${PROCESS_CONNECTIONS}" ]; then
-    echo "Connections for process \"${PROCESS}\" not found.";
-    echo "$EXAMPLE_OF_USAGE";
+    printf "Connections for process \"%s\" not found.\n\r" "${PROCESS}"; 
     exit 1;
 fi
 
