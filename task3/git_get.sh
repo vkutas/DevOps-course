@@ -10,33 +10,42 @@ USER_NAME=$(echo "$URL" | cut -d'/' -f4);
 #Create a temp dir to store responses because they could be too large to store in memory.
 PULLS_TMP_DIR=$(mktemp -d);
 printf "Reading data from the repo '%s' of user '%s'...\n\r" "$REPO_NAME" "$USER_NAME";
-# curl data page by page.
-for ((i=1; i<=2; i++)); do
-    # Temp file to store response.
-    PAGE_TMP=$(mktemp -p "$PULLS_TMP_DIR" -t "tmp.pulls.XXXXXX.${i}")
 
-    # Get http response code to catch errors.
-    RESPONSE_CODE=$(curl -s -w "%{http_code}" -o "$PAGE_TMP" "https://api.github.com/repos/${USER_NAME}/${REPO_NAME}/pulls?state=all&per_page=100&page=${i}");
+# Init resulting varible with empty json array
+payload="[]";
 
-    if [[ "$RESPONSE_CODE" -eq 200 ]]; then
-        # echo "DEBUG: ${RESPONSE_CODE}";
-        # If response contains empty array json, then data is over.
-        if [[ $(cat "$PAGE_TMP" | jq '. | length') == 0 ]]; then
-            break;
-        fi
-        # If response code is not '200', then print error message and exit.
-    else
-        echo "The error occur when loading data: Response code: ${RESPONSE_CODE}";
+# curl open PR page by page, 100 per query.
+for ((i=1; ; i++)); do
+
+    response=$(curl -s -w "%{http_code}" "https://api.github.com/repos/${USER_NAME}/${REPO_NAME}/pulls?&per_page=100&page=${i}");   
+
+    # Extract the response code 
+    response_code=$(echo "$response" | tail -n1);
+
+    # If response code is not 200, then print error message and exit the programm
+    if [[ "$response_code" -ne 200 ]]; then 
+        printf "Error: http response code is %s\n\r" "$response_code"
         exit 1;
     fi
+    # Extract the payload and remove unnecessary staff
+    data=$(echo "$response" | head -n -1 | jq  '[.[] | { u: .user | .login, s: .state, l: [.labels | map(.name)]}]');
+
+    # If response body contains an empty array, then exit the loop
+    if [[ $(echo "$data" | jq '. | length') == 0 ]]; then
+        break
+    fi
+
+    # Merge current payload  with the payload from previous iteration.
+    payload=$(jq -n --argjson arg1 "$payload" --argjson arg2 "$data" '$arg1 + $arg2');
 done
 
-# Merge all received pages in a single json array.
-PULLS=$(jq -s '. | add'  "${PULLS_TMP_DIR}"/tmp.pulls.*);
+echo "$payload" > test.json;
 
-open_pulls=$(echo "$PULLS" | jq '[.[] | select(.state == "open")]')
-open_pulls_count=$(echo "$open_pulls" | jq '. | length')
-printf "Found %s opened pull requests.\n\r" "$open_pulls_count"
+
+#open_pulls=$(echo "$payload" | jq '[.[] | select(.state == "open")]')
+#printf "Found %s opened pull requests. %s in total\n\r" "$(echo "$open_pulls" | jq '. | length')" "$(echo "$payload" | jq '. | length')"
+
+printf "Found %s opened pull requests.\n\r" "$(echo "$payload" | jq '. | length')"
 
 printf "Most productive contributors:\n\r";
-echo "$open_pulls" | jq '.[].user.login' | sort | uniq -c | sort -r -k 1 | awk 'BEGIN {printf "  User name  \tOpen Pull Requests\n"}; $1 > 1 {printf "%-12s\t\t%-12s\n", $2, $1}'
+echo "$payload" | jq '.[].u' | sort | uniq -c | sort -gr -k 1 | awk 'BEGIN {printf "\tUser name\t\tOpen Pull Requests\n"}; $1 > 1 {printf "%-17s\t%16s\n", $2, $1}'
