@@ -1,23 +1,27 @@
 #!/bin/bash
-trap 'rm -rf "$TMP_DIR"' EXIT;
-#URL="https://github.com/Asabeneh/30-Days-Of-Python";
-URL="https://github.com/mozilla/activity-stream";
-#URL="https://github.com/TelegramMessenger/MTProxy/pulls";
-#URL="https://github.com/nodejs/node";
-REPO_NAME=$(echo "$URL" | cut -d'/' -f5);
-USER_NAME=$(echo "$URL" | cut -d'/' -f4);
 
-#Create a temp dir to store responses because they could be too large to store in memory.
-PULLS_TMP_DIR=$(mktemp -d);
-printf "Reading data from the repo '%s' of user '%s'...\n\r" "$REPO_NAME" "$USER_NAME";
+if [ ${#@} -ne 1 ]; then
+    printf "Link to the repository is not provided or not valid.\n\r";
+    printf "Example of usage: %s %s\n\r" "$0" "https://github.com/curl/curl";
+    exit 1;
+fi
+
+url=$1;
+repo_name=$(echo "$url" | cut -d'/' -f5);
+user_name=$(echo "$url" | cut -d'/' -f4);
+
+echo "DEBUG: $repo_name"
+echo "DEBUG: $user_name"
 
 # Init resulting varible with empty json array
 payload="[]";
 
+printf "Geting data from the repo '%s' of user '%s'..." "$repo_name" "$user_name"
+
 # curl open PR page by page, 100 per query.
 for ((i=1; ; i++)); do
 
-    response=$(curl -s -w "%{http_code}" "https://api.github.com/repos/${USER_NAME}/${REPO_NAME}/pulls?&per_page=100&page=${i}");   
+    response=$(curl -s -w "%{http_code}" "https://api.github.com/repos/${user_name}/${repo_name}/pulls?&per_page=100&page=${i}");   
 
     # Extract the response code 
     response_code=$(echo "$response" | tail -n1);
@@ -27,8 +31,8 @@ for ((i=1; ; i++)); do
         printf "Error: http response code is %s\n\r" "$response_code"
         exit 1;
     fi
-    # Extract the payload and remove unnecessary staff
-    data=$(echo "$response" | head -n -1 | jq  '[.[] | { u: .user | .login, s: .state, l: [.labels | map(.name)]}]');
+    # Extract the payload and remove unnecessary staff to make it more compact
+    data=$(echo "$response" | head -n -1 | jq -c '[.[] | { u: .user | .login, l: [.labels | map(.name)]}]');
 
     # If response body contains an empty array, then exit the loop
     if [[ $(echo "$data" | jq '. | length') == 0 ]]; then
@@ -36,14 +40,10 @@ for ((i=1; ; i++)); do
     fi
 
     # Merge current payload  with the payload from previous iteration.
-    payload=$(jq -n --argjson arg1 "$payload" --argjson arg2 "$data" '$arg1 + $arg2');
+    payload=$(jq -nc --argjson arg1 "$payload" --argjson arg2 "$data" '$arg1 + $arg2');
 done
 
 echo "$payload" > test.json;
-
-
-#open_pulls=$(echo "$payload" | jq '[.[] | select(.state == "open")]')
-#printf "Found %s opened pull requests. %s in total\n\r" "$(echo "$open_pulls" | jq '. | length')" "$(echo "$payload" | jq '. | length')"
 
 printf "Found %s opened pull requests.\n\r" "$(echo "$payload" | jq '. | length')"
 
