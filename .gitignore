@@ -1,0 +1,5 @@
+*.json
+*.log
+
+# Task 2 Data
+!task2/quotes.json
