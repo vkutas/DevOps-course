@@ -37,8 +37,8 @@ Pull Requests, it issue 3 requst to the API, one for first page (PRs from 1 to 8
 
 #### EXAMPLE OF USAGE ####
 
-     ./git_get.sh https://github.com/curl/curl
-     ./git_get.sh https://github.com/vkutas/DevOps-home-tasks
+     ./git_get_pulls.sh https://github.com/curl/curl
+     ./git_get_pulls.sh https://github.com/vkutas/DevOps-home-tasks
 
 #### NOTE ####
 This script works only with open Pull Requests only.
