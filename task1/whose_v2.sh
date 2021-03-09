@@ -1,5 +1,4 @@
 #!/bin/bash
-export PATH="/usr/local/bin:/usr/bin";
 EXAMPLE_OF_USAGE="Example of usage: 'whose_v2.sh firefox' or 'whose_v2.sh 1287'. See README_v2.md for more details.";
 PROCESS="$1";
 shift;
