@@ -48,8 +48,8 @@ start_year=$1
 end_year=$2
 
 # If the end month and year greater than the current,  print error message ans exit.
-if [ $(date +%y) -lt $end_year ] && [ $(date +%m) -le $month ];then
-    printf "There is no data for the period from 01.%s.%s to 01.%s.%s.\n\rTry to use another MONTH or another END_YEAR.\n\r" "$month" "$start_year" "$month" "$end_year"
+if [ $(date +%y) -le $end_year ] && [ $(date +%m) -le $month ];then
+    printf "There is no data for the period from 01.%s.%s to 01.%s.%s.\n\rTry to use another MONTH_NUMBER or another END_YEAR.\n\r" "$month" "$start_year" "$month" "$end_year"
     echo "$help_message"
     exit 1
 fi    
