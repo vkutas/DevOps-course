@@ -17,7 +17,7 @@ done
 
 if [ -z "${PROCESS}" ]; then
     printf "Process name or PID must be specified\n\r%s\n\r" "${EXAMPLE_OF_USAGE}";
-    exit 1;
+    exit 0;
 fi
 
 if [ -z "${CONNECTIONS_DETAILS}" ]; then
