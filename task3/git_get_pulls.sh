@@ -6,9 +6,9 @@ if [ ${#@} -ne 1 ]; then
     exit 1;
 fi
 
-url=$1;
-repo_name=$(echo "$url" | cut -d'/' -f5);
-user_name=$(echo "$url" | cut -d'/' -f4);
+repo_name=$(echo "$1" | cut -d'/' -f5);
+user_name=$(echo "$1" | cut -d'/' -f4);
+
 api_pulls_url="https://api.github.com/repos/${user_name}/${repo_name}/pulls"
 
 # Init resulting varible with empty json array
@@ -19,7 +19,7 @@ printf "Geting data from the repo '%s' of user '%s'...\n\r" "$repo_name" "$user_
 # curl open PRs page by page, 100 per query.
 for ((i=1; ; i++)); do
 
-    response=$(curl -s -w "%{http_code}" "${api_pulls_url}?&per_page=100&page=${i}");
+    response=$(curl -s -w "%{http_code}" "${api_pulls_url}?per_page=100&page=${i}");
     
     # Extract the response code 
     response_code=$(echo "$response" | tail -n1);
