@@ -128,7 +128,8 @@ if [[ "$response_code" -ne 200 ]]; then
 fi
 
 # Extract the required data from response 
-data=$(echo "$response" | head -n -1 | jq -c '[.[] | { t: .title, u: .user.login, d: .created_at, l: .labels | map(.name)}]');
+data=$(echo "$response" | head -n -1 | jq -c '[.[] | { t: .title, u: .user.login, d: .created_at, l: .labels | map(.name)}] | sort_by(.d) | reverse');
+echo "$data" > data.json
 while read  pull; do   
     pop_pulls=$(printf "%s\n\r%-20s %-22s %-92s %-30s" "$pop_pulls" \
         "$(echo $pull | jq -r '.u')" \
