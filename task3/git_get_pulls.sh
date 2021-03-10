@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ${#@} -ne 1 ]; then
+if [ ${#@} -lt 1 ]; then
     printf "Link to the repository is not provided or not valid.\n\r";
     printf "Example of usage: %s %s\n\r" "$0" "https://github.com/curl/curl";
     exit 1;
@@ -8,8 +8,20 @@ fi
 
 repo_name=$(echo "$1" | cut -d'/' -f5);
 user_name=$(echo "$1" | cut -d'/' -f4);
+api_pulls_url="https://api.github.com/repos/${user_name}/${repo_name}/pulls";
+shift;
 
-api_pulls_url="https://api.github.com/repos/${user_name}/${repo_name}/pulls"
+while [ -n "${1}" ]; do
+    case "$1" in
+        -u    ) 
+                auth_username="$2";
+                shift;;
+        -t    ) auth_token="$2";
+                shift;;
+        *     ) ;;
+    esac
+    shift;
+done
 
 # Init resulting varible with empty json array
 data="[]";
@@ -19,7 +31,12 @@ printf "Geting data from the repo '%s' of user '%s'...\n\r" "$repo_name" "$user_
 # curl open PRs page by page, 100 per query.
 for ((i=1; ; i++)); do
 
-    response=$(curl -s -w "%{http_code}" "${api_pulls_url}?per_page=100&page=${i}");
+    if [ -n "$auth_username" ] && [ -n "$auth_token" ]; 
+        then
+            response=$(curl -s -w "%{http_code}" -u ${auth_username}:${auth_token} "${api_pulls_url}?per_page=100&page=${i}");
+        else
+            response=$(curl -s -w "%{http_code}" "${api_pulls_url}?per_page=100&page=${i}");
+    fi
     
     # Extract the response code 
     response_code=$(echo "$response" | tail -n1);
@@ -95,7 +112,12 @@ done <<< "$contributors"
 # Most discussed PRs
 
 # Get 10 most discussed comments
-response=$(curl -s -w "%{http_code}" "${api_pulls_url}?sort=popularity&direction=desc&per_page=10&page=1")
+if [ -n "$auth_username" ] && [ -n "$auth_token" ]; 
+    then
+         response=$(curl -s -w "%{http_code}" -u ${auth_username}:${auth_token} "${api_pulls_url}?sort=popularity&direction=desc&per_page=10&page=1")
+    else
+        response=$(curl -s -w "%{http_code}" "${api_pulls_url}?sort=popularity&direction=desc&per_page=10&page=1");
+fi
 
 # Extract the response code 
 response_code=$(echo "$response" | tail -n1);

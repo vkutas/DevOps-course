@@ -37,15 +37,20 @@ It uses [**curl**](https://github.com/curl/curl) to query the API and [**jq**](h
 Script query the data page by page (100 Pull Requests per page) until empty page is returned and then process them. So. if the repo you pass as argument has 80 open 
 Pull Requests, it issue 3 requst to the API, one for first page (PRs from 1 to 80), empty page which shows that the data ends and last requst to get most popular Pull Requests. 
 
+### Authentication ###
+The script support authentication with [GitHub personal token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token). If you don't provide the username and token You will be limited to 60 requests per hour. 
+
 #### USAGE ####
 
     ./git_get_pulls.sh [LINK_TO_REPOSITORY]
-
+     ./git_get_pulls.sh LINK_TO_REPOSITORY -u AUTH_USERNAME -t AUTH_TOKEN
+    
 #### EXAMPLE OF USAGE ####
 
      ./git_get_pulls.sh https://github.com/curl/curl
      ./git_get_pulls.sh https://github.com/vkutas/DevOps-home-tasks
+     ./git_get_pulls.sh https://github.com/vkutas/DevOps-home-tasks -u znak -t sdfs4ghklkj23sdf23424fvdfv3g541dsf
 
 #### NOTE ####
-This script works only with open Pull Requests only.
+This script works with open Pull Requests only.
 Also note that GitHub limit API requests to 60 per hour from IP for unauthenticated clients. 
