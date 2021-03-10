@@ -3,6 +3,13 @@ File ***mean_v2.sh*** contains script which produce the same result as ***mean_o
 File ***best_march.sh*** contains implementation of part 3 of task 2:  
 >tell me which March the price was the least volatile since 2015? To do so have to find the difference between MIN and MAX values for the period.  
 
+### best_march.sh ###
+Usage: `./best_march.sh MONTH_NUMBER START_YEAR END_YEAR`
+
+Example of usage: `./best_march.sh 3 15 18`  
+
+Get help: `./best_march.sh -h`
+
 The output of the script is the year of March when the EUR/RUB rate was less volatile.  
 To do so, we get all subarrays of *prices* array and add two new values into it - month and year. In order to get these values, first we need to convert Unix time from milliseconds to seconds and then pass the resulting value in to ***strftime()*** function with the desired pattern.  
 

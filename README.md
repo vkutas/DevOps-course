@@ -15,7 +15,13 @@ The directory "task2" contains implementations of task 2, Scripting Homework rel
 1. ***mean_origin.sh*** - Original script from the task.  
 2. ***mean_v2.sh*** - Version of original script without using *grep* and *pattern matching*.  
 3. ***quotes.json*** -  Historical quotes for EUR/RUB pair since late November 2014:
-4. ***best_march.sh*** - Final part of task. This script read the  ***quotes.json*** and find the year which March the price was the least volatile since 2015.
+4. ***best_march.sh*** - Final part of task. This script read the  ***quotes.json*** and find the year which March the price was the least volatile since 2015.   
+
+    Usage: `./best_march.sh MONTH_NUMBER START_YEAR END_YEAR`
+
+    Example of usage: `./best_march.sh 3 15 18`  
+
+    Get help: `./best_march.sh -h`
 
 More details in ***task2/README.md***. 
 
