@@ -92,7 +92,7 @@ echo "$data" | jq '.[].u' | sort | uniq -c | sort -gr -k 1 | awk '$1 > 1 {printf
 # Number of PRs each contributor created and get labels of each his\her PR.
 
 # Extract data from payload 
-contributors=$(echo "$data" | jq -rc 'group_by(.u) |  [.[] | {n: . | length, u: .[0].u, l: . | map(.l[]) | unique }] | sort_by(.n) | reverse | .[] | {n: .n, u: .u, l: .l}') 
+contributors=$(echo "$data" | jq -rc 'group_by(.u) |  [.[] | {n: . | length, u: .[0].u, l: . | map(.l[]) | unique }] | sort_by(.n) | reverse | .[]') 
 # Print header
 printf "\n\n\r%35s\n\r" "Open Pull Requests";
 printf "#%.0s" {1..52}
@@ -129,7 +129,6 @@ fi
 
 # Extract the required data from response 
 data=$(echo "$response" | head -n -1 | jq -c '[.[] | { t: .title, u: .user.login, d: .created_at, l: .labels | map(.name)}]');
-
 while read  pull; do   
     pop_pulls=$(printf "%s\n\r%-20s %-22s %-92s %-30s" "$pop_pulls" \
         "$(echo $pull | jq -r '.u')" \
