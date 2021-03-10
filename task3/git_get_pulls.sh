@@ -92,8 +92,7 @@ echo "$data" | jq '.[].u' | sort | uniq -c | sort -gr -k 1 | awk '$1 > 1 {printf
 # Number of PRs each contributor created and get labels of each his\her PR.
 
 # Extract data from payload 
-contributors=$(echo "$data" | jq -rc 'group_by(.u) |  .[] | {n: . | length, u: .[0].u, l: . | map(.l[]) | unique }')
-
+contributors=$(echo "$data" | jq -rc 'group_by(.u) |  [.[] | {n: . | length, u: .[0].u, l: . | map(.l[]) | unique }] | sort_by(.n) | reverse | .[] | {n: .n, u: .u, l: .l}') 
 # Print header
 printf "\n\n\r%35s\n\r" "Open Pull Requests";
 printf "#%.0s" {1..52}
