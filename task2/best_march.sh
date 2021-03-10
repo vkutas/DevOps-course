@@ -84,6 +84,6 @@ month_name=$(date -d "${month}/01" +%B)
 year=$(echo $least_volatile_year | cut -d' ' -f1)
 value=$(echo $least_volatile_year | cut -d' ' -f2)
 
-printf "The least volatile %s was in %s with value of: %s \n\n\r" "$month_name" "${year:1:4}" "$value"
+printf "The least volatile %s for the period from 01.%s.20%s to 01.%s.20%s was in %s with value of: %s \n\n\r" "$month_name" "$month" "$start_year" "$month" "$end_year" "${year:1:4}" "$value"
 printf "YEAR\tEUR/RUB VALATILITY"
 echo "$valatility" 
