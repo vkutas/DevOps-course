@@ -95,13 +95,13 @@ echo "$data" | jq '.[].u' | sort | uniq -c | sort -gr -k 1 | awk '$1 > 1 {printf
 contributors=$(echo "$data" | jq -rc 'group_by(.u) |  [.[] | {n: . | length, u: .[0].u, l: . | map(.l[]) | unique }] | sort_by(.n) | reverse | .[]') 
 # Print header
 printf "\n\n\r%35s\n\r" "Open Pull Requests";
-printf "#%.0s" {1..52}
-printf "\n\r%-12s\t%12s\t%20s\n\r" "USER" "COUNT OF PRs" "LABELS"
-printf "=%.0s" {1..52};
+printf "#%.0s" {1..170}
+printf "\n\r%-20s\t%12s\t%20s\n\r" "USER" "COUNT OF PRs" "LABELS"
+printf "=%.0s" {1..170};
 
 # Print the data
 while IFS= read -r contributor; do
-    printf "\n\r%-12s\t%6s\t\t%-28s" `
+    printf "\n\r%-20s\t%6s\t\t%-28s" `
         `"$(echo "$contributor" | jq -r '.u')" `          
         `"$(echo "$contributor" | jq -r '.n')" `          
         `"$(echo "$contributor" | jq -r '.l | join(", ")')";  
@@ -129,7 +129,7 @@ fi
 
 # Extract the required data from response 
 data=$(echo "$response" | head -n -1 | jq -c '[.[] | { t: .title, u: .user.login, d: .created_at, l: .labels | map(.name)}] | sort_by(.d) | reverse');
-echo "$data" > data.json
+
 while read  pull; do   
     pop_pulls=$(printf "%s\n\r%-20s %-22s %-92s %-30s" "$pop_pulls" \
         "$(echo $pull | jq -r '.u')" \
