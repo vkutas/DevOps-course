@@ -1,0 +1,18 @@
+packages:
+  - python3-pip
+  - python3-dev
+  - build-essential
+  - libssl-dev
+  - libffi-dev
+  - python3-setuptools
+  - python3-venv
+  - nginx
+python_libs:
+  - wheel
+  - uwsgi
+  - flask
+  - emoji
+server_ipv4: 192.168.1.102  
+service_user_name: emoji_service
+service_user_password: service
+service_user_home: "/home/{{ service_user_name }}"

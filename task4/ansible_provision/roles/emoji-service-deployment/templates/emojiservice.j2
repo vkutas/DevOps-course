@@ -1,0 +1,8 @@
+server {
+    listen 1{ server_ipv4 }}:80;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:{{ service_user_home }}/emojiservice.sock;
+    }
+}

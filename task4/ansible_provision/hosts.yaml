@@ -2,7 +2,7 @@ all:
   children:
     web_services:
       hosts:
-        jenkins: 
-          ansible_host: 192.168.1.111
+        emoji-service: 
+          ansible_host: 192.168.1.102
           ansible_user: vagrant
-          ansible_ssh_private_key_file:  ~/.vagrant/machines/default/virtualbox/private_key
+          ansible_ssh_private_key_file:  ~/.vagrant/machines/default/virtualbox/private_key  

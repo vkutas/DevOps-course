@@ -1,0 +1,81 @@
+---
+- name: Install requried packages
+  ansible.builtin.ant: 
+    pkg: "{{ packages }}"
+    state: present
+    update_cache: yes
+
+- name: Create service-owner user
+  ansible.builtin.user:
+    name: "{{ service_user_name }}"
+    group: "{{ service_user_name }}"
+    groups: sudo
+    password: "{{ service_user_password }}"
+    create_home: yes
+    home: "{{ service_user_home }}"
+    state: present
+
+- name: Create virual environment and install requred python packages
+  ansible.builtin.pip:
+    name: "{{ python_libs }}"
+    virtualenv: "{{ service_user_home }}/service-venv"
+    virtualenv_python: python3.7
+    state: present
+
+- name: Copy emoji-service executable
+  ansible.builtin.copy:
+    src: emojiservice.py
+    dest: "{{ service_user_home }}"
+    owner: "{{ service_user_name }}"
+    group: "{{ service_user_name }}"
+    state: present
+
+- name: Copy uWSGI config file
+    ansible.builtin.copy:
+    src: emojiservice.ini
+    dest: "{{ service_user_home }}"
+    owner: "{{ service_user_name }}"
+    group: "{{ service_user_name }}"
+    state: present     
+
+- name: Copy WSGI entry file
+  ansible.builtin.copy:
+    src: wsgi.py
+    dest: "{{ service_user_home }}"
+    owner: "{{ service_user_name }}"
+    group: "{{ service_user_name }}"
+    state: present
+
+- name: Copy systemd unit of service
+  ansible.builtin.template:
+    src: emoji-service.service.j2
+    dest: /etc/systemd/system/emoji-service.service
+    owner: root
+    group: root
+
+- name: Start and enable emoji-service
+  ansible.builtin.service:
+    name: emoji-service
+    enabled: yes
+    state: started
+
+- name: Copy nginx server block configuration file
+  ansible.builtin.template:
+    src: emojiservice.j2
+    dest: /etc/nginx/sites-available/emojiservice
+    owner: root
+    group: root
+
+- name: Enable the nginx server block configuration
+  ansible.builtin.file:
+     src: /etc/nginx/sites-available/emojiservice
+     dest: /etc/nginx/sites-enabled
+     state: link
+
+- name: Start and enable emoji-service
+  ansible.builtin.service:
+    name: nginx
+    enabled: yes
+    state: restarted
+
+
