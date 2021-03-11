@@ -22,7 +22,16 @@ if __name__ == "__main__":
     app.run(host='0.0.0.0')
 
 def emoji_provider(emoji_desc):
+    """ Take a dict of format {word: 'name', count: n} and
+    return string which consists of 'name' repeated 'n' times using emoji which name
+    is equal to 'name' as delimeter. 
+    If there is no emoji with name 'name', random emoji is used instead. 
 
+    Parameters
+        ----------
+        emoji_desc : dict
+            Dict of format {word: 'name', count: n} 
+     """
     name = emoji_desc['word']
     count = emoji_desc['count']
     emoji_name = ':' + name + ':'
