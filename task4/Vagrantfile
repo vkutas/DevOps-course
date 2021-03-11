@@ -12,22 +12,16 @@ Vagrant.configure("2") do |config|
 
     # VM Provider settings
     config.vm.provider "virtualbox" do |v|
-      v.name = "jenkins"
+      v.name = "emojiService"
       v.memory = 2048
       v.cpus = 2
     end
 
     config.vm.hostname = "emoji-service"
     config.vm.network "private_network", ip: "192.168.1.102"
-    #config.vm.network "forwarded_port", guest: 8080, host: 8080
-
-  #  # Run Ansible provisioner to install and configure Jenkins and provide dependencies
-  #   config.vm.provision "install_jenkins", type:'ansible' do |ansible|
-  #     ansible.verbose = "vv"
-  #     ansible.vault_password_file = "provisioning/github_keys.pass"
-  #     ansible.inventory_path = 'provisioning/ansible/hosts.yaml'
-  #     ansible.playbook = "provisioning/ansible/provision_jenkins.yaml"  
-  # end
+    config.vm.network "forwarded_port", guest: 80, host: 8080
+    config.vm.synced_folder "emoji-py/", "/home/vagrant/emoji-py", 
+    owner: "vagrant", group: "vagrant"
 
   end
 
