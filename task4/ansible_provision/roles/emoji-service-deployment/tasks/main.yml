@@ -12,6 +12,7 @@
     password: "{{ service_user_password }}"
     create_home: yes
     home: "{{ service_user_home }}"
+    shell: /bin/bash
     state: present
 
 - name: Create virual environment and install requred python packages
