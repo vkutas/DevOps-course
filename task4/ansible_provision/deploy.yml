@@ -1,0 +1,6 @@
+---
+- name: Deploy Emoji Service
+  hosts: service
+  become: yes
+  roles:
+    - emoji-service-deployment

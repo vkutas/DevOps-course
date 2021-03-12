@@ -4,6 +4,7 @@ packages:
   - build-essential
   - libssl-dev
   - libffi-dev
+  - python-setuptools
   - python3-setuptools
   - python3-venv
   - nginx

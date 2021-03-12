@@ -1,5 +1,5 @@
 server {
-    listen 1{ server_ipv4 }}:80;
+    listen {{ server_ipv4 }}:80;
 
     location / {
         include uwsgi_params;
