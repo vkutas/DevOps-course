@@ -8,7 +8,7 @@
 - name: Create service-owner user
   ansible.builtin.user:
     name: "{{ service_user_name }}"
-    groups: sudo
+    #groups: sudo
     password: "{{ service_user_password }}"
     create_home: yes
     home: "{{ service_user_home }}"
