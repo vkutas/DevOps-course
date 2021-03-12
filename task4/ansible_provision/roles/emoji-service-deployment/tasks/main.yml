@@ -22,26 +22,12 @@
     virtualenv_command: 'python3.7 -m venv'
     state: present
 
-- name: Copy emoji-service executable
+- name: Copy emoji-service files
   ansible.builtin.copy:
-    src: emojiservice.py
+    src: emoji-service/
     dest: "{{ service_user_home }}"
     owner: "{{ service_user_name }}"
-    group: "{{ service_user_name }}"
-
-- name: Copy uWSGI config file
-  ansible.builtin.copy:
-    src: emojiservice.ini
-    dest: "{{ service_user_home }}"
-    owner: "{{ service_user_name }}"
-    group: "{{ service_user_name }}"
-
-- name: Copy WSGI entry file
-  ansible.builtin.copy:
-    src: wsgi.py
-    dest: "{{ service_user_home }}"
-    owner: "{{ service_user_name }}"
-    group: "{{ service_user_name }}"
+    group: "{{ service_user_name }}"    
 
 - name: Copy systemd unit of service
   ansible.builtin.template:
@@ -54,7 +40,7 @@
   ansible.builtin.service:
     name: emoji-service
     enabled: yes
-    state: started
+    state: restarted
 
 - name: Copy nginx server block configuration file
   ansible.builtin.template:

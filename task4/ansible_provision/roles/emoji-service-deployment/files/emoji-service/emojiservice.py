@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import request
+from flask import render_template
 import emoji
 import random
 
@@ -16,7 +17,9 @@ def test_post():
         content = request.get_json(force=True)
         return emoji_provider(content)
     else:
-        return "You use GET method!"
+        url = request.url
+
+        return render_template('greeting.html', url = url)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
