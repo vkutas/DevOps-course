@@ -10,20 +10,18 @@ body{
     font-family: 'Oswald', sans-serif;  
   }
 
-#text, #footer {
+.content, #footer {
     display: flex;
+    flex-direction: column;
+    height: 80vh;
     align-items: center;
     justify-content: center;
     text-align: center;
     position:relative;
 }
 
-#text {
-    flex-direction: column;
-    height: 80vh;
-}
-
 #footer {
+    flex-direction: row;
     height: 20vh;
     color: #808080;
 }

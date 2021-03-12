@@ -17,9 +17,7 @@ def test_post():
         content = request.get_json(force=True)
         return emoji_provider(content)
     else:
-        url = request.url
-
-        return render_template('greeting.html', url = url)
+        return render_template('greeting.html', url = request.url)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
@@ -47,3 +45,11 @@ def emoji_provider(emoji_desc):
     for i in range(count):
         response_body += name + emoji_icon
     return response_body
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
