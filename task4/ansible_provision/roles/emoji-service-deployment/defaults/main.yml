@@ -7,6 +7,7 @@ packages:
   - python-setuptools
   - python3-setuptools
   - python3-venv
+  - python-cryptography
   - nginx
 python_libs:
   - wheel

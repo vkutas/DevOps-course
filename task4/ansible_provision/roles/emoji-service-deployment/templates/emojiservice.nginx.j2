@@ -1,0 +1,21 @@
+server {
+    listen 80 default_server;
+    listen 443 ssl;
+
+    # Multi site configuration
+     #listen {{ server_ipv4 }}:80;
+    
+    ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
+    ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:{{ service_user_home }}/emojiservice.sock;
+    }
+}
+
+# Redirection from http to https
+#server {
+#   listen {{ server_ipv4 }}:80;
+#    return 301 https://$server_addr$request_uri;
+#}
