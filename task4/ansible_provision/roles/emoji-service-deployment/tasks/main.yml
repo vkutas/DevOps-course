@@ -40,8 +40,7 @@
     name: emoji-service
     enabled: yes
     state: restarted
-    
-
+  
 - name: Generate Key for self signed sertificate. 
   community.crypto.openssl_privatekey:
     path: /etc/ssl/private/nginx-selfsigned.key
@@ -114,3 +113,17 @@
     chain: INPUT
     jump: DROP
     comment: Deny all incoming connection.
+
+## SSHD Config
+- name: replace sshd_config file
+  ansible.builtin.copy:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root 
+  
+- name: Restart sshd service
+  ansible.builtin.service:
+    name: sshd
+    enabled: yes
+    state: restarted
