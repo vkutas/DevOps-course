@@ -6,7 +6,7 @@
 
   tasks:
 
-    - name: Append iptables rule to allow incoming ssh connections on port {{ ssh_port }}
+    - name: Append iptables rule to allow incoming ssh connections on port {{ ssh_port }}.
       ansible.builtin.iptables:
         chain: INPUT
         protocol: tcp
@@ -33,7 +33,15 @@
         jump: ACCEPT
         comment: Allow new incoming http connections on port 443. 
 
-    - name: Append iptables rule to deny all incoming connection
+    - name: Append iptables rule to allow all incoming trafic ralated to server outgoing connections.
+      ansible.builtin.iptables:
+        chain: INPUT
+        match: state
+        ctstate: ESTABLISHED,RELATED
+        jump: ACCEPT
+        comment: Allow all incoming trafic ralated to server outgoing connections.
+
+    - name: Append iptables rule to deny all incoming connection.
       ansible.builtin.iptables:
         chain: INPUT
         jump: DROP
