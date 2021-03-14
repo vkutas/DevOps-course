@@ -1,0 +1,13 @@
+[Unit]
+Description=Enterprise Grade Emoji Provider!
+After=network.target
+
+[Service]
+User={{ emoji_service_user_name }}
+Group=www-data
+WorkingDirectory={{ emoji_service_user_home }}
+Environment="PATH={{ emoji_service_user_home }}/service-venv/bin"
+ExecStart={{ emoji_service_user_home }}/service-venv/bin/uwsgi --ini emojiservice.ini
+
+[Install]
+WantedBy=multi-user.target

@@ -1,8 +1,0 @@
----
-- name: Deploy Emoji Service
-  hosts: service
-  become: yes
-  roles:
-    - emoji-service-deployment
-  vars:
-    service_user_password: $6$2UJnI.ONZ$12z4Wx2nbFhLeFeBvNiTtAKEcJx6gxhNkec9EeOgiN1CYzp.xIkGobsgoCYg4uUZIuUNAWauXOYGpUQ2pPuck/

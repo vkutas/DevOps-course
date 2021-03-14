@@ -1,0 +1,12 @@
+---
+- name: Deploy Emoji Service
+  hosts: emojiservice
+  become: yes
+
+  vars: 
+   - emoji_service_user_name: emoji_service
+   - emoji_service_user_home: "/home/{{ emoji_service_user_name }}" 
+   - server_ipv4: 192.168.1.102
+
+  roles:
+    - emojiservice_deploy

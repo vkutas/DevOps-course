@@ -5,12 +5,12 @@ server {
     # Multi site configuration
      #listen {{ server_ipv4 }}:80;
     
-    ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
-    ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+    ssl_certificate {{ crt_file_path }};
+    ssl_certificate_key {{ key_file_path }}; 
 
     location / {
         include uwsgi_params;
-        uwsgi_pass unix:{{ service_user_home }}/emojiservice.sock;
+        uwsgi_pass unix:{{ emoji_service_user_home }}/emojiservice.sock;
     }
 }
 

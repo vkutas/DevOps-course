@@ -1,0 +1,54 @@
+- name: Adds firewall rules and aplly ssshd configuration to webservers.
+  hosts: webservers
+  become: yes
+  vars:
+    - ssh_port: 22
+
+  tasks:
+
+    - name: Append iptables rule to allow incoming ssh connections on port {{ ssh_port }}
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "{{ ssh_port }}"
+        ctstate: NEW,ESTABLISHED
+        jump: ACCEPT
+        comment: Allow incoming ssh connections on port {{ ssh_port }}.    
+
+    - name: Append iptables rule to allow incoming http connections on port 80.
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 80
+        ctstate: NEW,ESTABLISHED
+        jump: ACCEPT
+        comment: Allow incoming http connections on port 80.  
+
+    - name: Append iptables rule to allow incoming https connections on port 443.
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 443
+        ctstate: NEW,ESTABLISHED
+        jump: ACCEPT
+        comment: Allow new incoming http connections on port 443. 
+
+    - name: Append iptables rule to deny all incoming connection
+      ansible.builtin.iptables:
+        chain: INPUT
+        jump: DROP
+        comment: Deny all incoming connection.
+
+    - name: replace sshd_config file
+      ansible.builtin.copy:
+        src: files/security/sshd_config
+        dest: /etc/ssh/sshd_config
+        owner: root
+        group: root 
+    
+    - name: Restart sshd service
+      ansible.builtin.service:
+        name: sshd
+        enabled: yes
+        state: restarted    
+    
