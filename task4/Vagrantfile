@@ -38,6 +38,13 @@ Vagrant.configure("2") do |config|
         ansible.playbook = "#{ANSIBLE_PROVISIONING_PATH}/webservers_install_dependencies.yml"  
     end
 
+    # Ansible provisioner to apply security configuration
+    config.vm.provision "security_config", type:'ansible' do |ansible|
+      ansible.verbose = ANSIBLE_VERBOSE_MODE
+      ansible.inventory_path = ANSIBLE_INVENTORY_PATH
+      ansible.playbook = "#{ANSIBLE_PROVISIONING_PATH}/webservers_security_config.yml"  
+    end
+
     # Ansible provisioner to create self-signed ssl certificate
     config.vm.provision "ssl_self_signed", type:'ansible' do |ansible|
       ansible.verbose = ANSIBLE_VERBOSE_MODE
@@ -57,13 +64,6 @@ Vagrant.configure("2") do |config|
       ansible.verbose = ANSIBLE_VERBOSE_MODE
       ansible.inventory_path = ANSIBLE_INVENTORY_PATH
       ansible.playbook = "#{ANSIBLE_PROVISIONING_PATH}/emoji-service_deploy.yml"  
-    end
-
-    # Ansible provisioner to apply security configuration
-    config.vm.provision "security_config", type:'ansible' do |ansible|
-      ansible.verbose = ANSIBLE_VERBOSE_MODE
-      ansible.inventory_path = ANSIBLE_INVENTORY_PATH
-      ansible.playbook = "#{ANSIBLE_PROVISIONING_PATH}/webservers_security_config.yml"  
     end
 
   end
