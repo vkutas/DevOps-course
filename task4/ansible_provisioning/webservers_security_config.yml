@@ -54,7 +54,7 @@
         owner: root
         group: root 
     
-    - name: Restart sshd service
+    - name: Restart sshd service.
       ansible.builtin.service:
         name: sshd
         enabled: yes
