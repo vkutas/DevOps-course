@@ -61,6 +61,7 @@ Vagrant.configure("2") do |config|
 
     # Ansible provisioner to deploy Emoji Service
     config.vm.provision "emoji-service_deploy", type:'ansible' do |ansible|
+      ansible.vault_password_file = "#{ANSIBLE_PROVISIONING_PATH}/username.vault"
       ansible.verbose = ANSIBLE_VERBOSE_MODE
       ansible.inventory_path = ANSIBLE_INVENTORY_PATH
       ansible.playbook = "#{ANSIBLE_PROVISIONING_PATH}/emoji-service_deploy.yml"  
