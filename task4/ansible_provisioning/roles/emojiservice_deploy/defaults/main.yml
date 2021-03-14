@@ -1,0 +1,12 @@
+python_libs:
+  - uwsgi
+  - flask
+  - emoji
+
+emoji_service_user_name: emoji_service
+emoji_service_user_home: "/home/{{ emoji_service_user_name }}" 
+emoji_service_user_password: $6$z9YTAz6o88cB8zDX$vrd/hazX5gCvYzCZSo4fynrNPu3/nlfiunWbJW.WmOGQ2ppB.aexSo0SO0ePldiO6i4R3cqly0O8aeX39TKLI1
+
+server_ipv4: 192.168.1.102
+crt_file_path: /etc/ssl/certs/selfsigned.crt
+key_file_path: /etc/ssl/private/selfsigned.key

@@ -1,0 +1,73 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+ANSIBLE_VERBOSE_MODE = "vv"
+ANSIBLE_PROVISIONING_PATH = "ansible_provisioning"
+ANSIBLE_INVENTORY_PATH = "#{ANSIBLE_PROVISIONING_PATH}/hosts.yml"
+ANSIBLE_SERVICE_USER_VAULT_FILE_PATH ="#{ANSIBLE_PROVISIONING_PATH}/username.vault"
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "debian/contrib-buster64"
+
+  # Disable VirtualBox Guest Additions check because this box already has it.
+  if Vagrant.has_plugin?("vagrant-vbguest") then
+    config.vbguest.auto_update = false
+  end
+
+  config.vm.define "emojiservice" do | emojiservice |
+
+    # VM Provider settings
+    config.vm.provider "virtualbox" do |v|
+      v.name = "emojiservice"
+      v.memory = 2048
+      v.cpus = 2
+    end
+
+    #config.ssh.insert_key = false
+    config.vm.hostname = "emojiservice"
+    config.vm.network "private_network", ip: "192.168.1.102"
+    config.vm.network "forwarded_port", guest: 80, host: 8080
+    config.vm.network "forwarded_port", guest: 443, host: 8443
+    config.vm.synced_folder "emoji-py/", "/home/vagrant/emoji-py", 
+      owner: "vagrant", group: "vagrant"
+
+    # Ansible provisioner to install dependencies
+    config.vm.provision "install_dependencies", type:'ansible' do |ansible|
+        ansible.verbose = ANSIBLE_VERBOSE_MODE
+        ansible.inventory_path = ANSIBLE_INVENTORY_PATH
+        ansible.playbook = "#{ANSIBLE_PROVISIONING_PATH}/webservers_install_dependencies.yml"  
+    end
+
+    # Ansible provisioner to apply security configuration
+    config.vm.provision "security_config", type:'ansible' do |ansible|
+      ansible.verbose = ANSIBLE_VERBOSE_MODE
+      ansible.inventory_path = ANSIBLE_INVENTORY_PATH
+      ansible.playbook = "#{ANSIBLE_PROVISIONING_PATH}/webservers_security_config.yml"  
+    end
+
+    # Ansible provisioner to create self-signed ssl certificate
+    config.vm.provision "ssl_self_signed", type:'ansible' do |ansible|
+      ansible.verbose = ANSIBLE_VERBOSE_MODE
+      ansible.inventory_path = ANSIBLE_INVENTORY_PATH
+      ansible.playbook = "#{ANSIBLE_PROVISIONING_PATH}/ssl_self_signed.yml"  
+    end
+
+    # Ansible provisioner to install and configure nginx
+    config.vm.provision "install_nginx", type:'ansible' do |ansible|
+      ansible.verbose = ANSIBLE_VERBOSE_MODE
+      ansible.inventory_path = ANSIBLE_INVENTORY_PATH
+      ansible.playbook = "#{ANSIBLE_PROVISIONING_PATH}/install_nginx.yml"  
+    end
+
+    # Ansible provisioner to deploy Emoji Service
+    config.vm.provision "emoji-service_deploy", type:'ansible' do |ansible|
+      ansible.vault_password_file = ANSIBLE_SERVICE_USER_VAULT_FILE_PATH
+      ansible.verbose = ANSIBLE_VERBOSE_MODE
+      ansible.inventory_path = ANSIBLE_INVENTORY_PATH
+      ansible.playbook = "#{ANSIBLE_PROVISIONING_PATH}/emoji-service_deploy.yml"  
+    end
+
+  end
+
+end

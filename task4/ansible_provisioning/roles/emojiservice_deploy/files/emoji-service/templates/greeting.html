@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Enterprise Emoji Provider - Greetings</title>
+    </head>
+    <link href="{{ url_for('static', filename = 'style.css') }}" rel="stylesheet"> 
+    <body>
+        <div id="all">
+            <div id="container">
+              <div id="animate"></div>
+            </div>
+        </div>
+        <div class="content">
+            <h1>Enterprise Emoji Provider</h1>
+                <h2>Hi! Thanks for using our service!</h2>
+                <p>It's looks like you are using <b>GET</b> http method, but to get a full experience, you should use <b>POST</b> method instead.</p>
+                <h3>Something like this:</h3>
+                <p><span>curl -X POST -d '{"word":"dolphin", "count":3}' {{ url }}</span></p>
+        </div>
+        <div id="footer" >
+            <p>Thanks to <a href="https://codepen.io/robertheiser" target="_blank">Robert Heiser</a> for <a href="https://codepen.io/robertheiser/pen/NXrqXa" target="_blank">EMOJI Rain</a></p>
+        </div>
+        <script src="{{ url_for('static', filename = 'emoji-rain.js') }}"></script> 
+    </body>
+</html>

@@ -1,0 +1,33 @@
+---
+- name: Create self-signed ssl certificate on the server
+  hosts: webservers
+  become: yes
+  vars:
+   - key_file_path: /etc/ssl/private/selfsigned.key
+   - csr_file_path: /etc/ssl/certs/selfsigned.csr
+   - crt_file_path: /etc/ssl/certs/selfsigned.crt
+    
+  tasks:
+
+    - name: Install python-cryptography on Debian-based server for community.crypto.* modules.
+      ansible.builtin.apt: 
+        name: python-cryptography
+        state: present
+        update_cache: yes
+
+    - name: Generate Key for self signed sertificate. 
+      community.crypto.openssl_privatekey:
+        path: "{{ key_file_path }}"
+
+    - name: Create CSR using the key from previous step.
+      community.crypto.openssl_csr:
+        path: "{{ csr_file_path }}"
+        privatekey_path: "{{ key_file_path }}"
+
+    - name: Generate  a self signed sertificate using key and csr from previous steps.
+      community.crypto.x509_certificate:
+        path: "{{ crt_file_path }}"
+        privatekey_path: "{{ key_file_path }}"
+        csr_path: "{{ csr_file_path }}"
+        provider: selfsigned
+   

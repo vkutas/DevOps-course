@@ -1,0 +1,22 @@
+---
+- name: Install and configure nginx
+  become: yes
+  hosts: webservers
+
+  tasks:
+    - name: Install nginx on Debian-based server.
+      ansible.builtin.apt: 
+        pkg: nginx
+        state: present
+        update_cache: yes
+
+    - name: Disable default nginx site.
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Restart and enable nginx
+      ansible.builtin.service:
+        name: nginx
+        enabled: yes
+        state: restarted    

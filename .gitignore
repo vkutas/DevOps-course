@@ -1,5 +1,6 @@
 *.json
 *.log
-
+*.vault
+task4/.vagrant
 # Task 2 Data
 !task2/quotes.json
